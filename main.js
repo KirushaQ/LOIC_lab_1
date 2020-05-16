@@ -11,7 +11,7 @@ function get_atr(s) {
 	var atr = "";
 	if (s == "" || s == "\0") return "";
 	while (s[i] != '\0') {
-		if (s[i] != '!' && s[i] != '|' && s[i] != '(' && s[i]!= ')') atr += s[i];
+		if (s[i] != '!' && s[i] != '|' && s[i] != '(' && s[i]!= ')' && s[i]!= '0' && s[i]!= '1') atr += s[i];
 		i++;
 	}
 	return atr;
@@ -82,14 +82,20 @@ function full_check_atr(atr_0, atr){
 }
 
 function check_in(s) {
+	var rx1 = new RegExp("&");
+	var rx2 = new RegExp("\\(([A-Z]\\|[A-Z])\\)|\\(\\((![A-Z]\\)\\|[A-Z])\\)|\\(([A-Z]\\|\\(![A-Z]\\))\\)|\\((\\(![A-Z]\\)\\|\\(![A-Z]\\))\\)");
 	var count = 0;
 	var i,j;
 	var ss = "";
+	var sk = "";
+	var a = [];
 	var atr = "";
 	var atr_0 = "";
 	var formules = [];
+	var kFormules = [];
 	j = 0;
 	//console.log(s);
+	if (!rx1.test(s)) return true;
 	for (i=0; i<s.length; i++){
 		if (s[i]=='&') continue;
 		//console.log(i);
@@ -106,6 +112,14 @@ function check_in(s) {
 			//console.log(ss);
 			formules[j] = ss;
 			j++;
+
+			if (rx2.test(ss)) {
+				sk = ss.match(rx2);
+				a = get_atr(sk[0] + '\0');
+				if (check_atr(a) == false) return false;
+				kFormules.push(sk[0]); 
+				ss = ss.replace(rx2,'1');
+			}
 			if (atr_0 == "") {
 				atr_0 = get_atr(ss+'\0');
 				if (check_atr(atr_0+'\0') == false) return false;
@@ -124,8 +138,14 @@ function check_in(s) {
 		}
 	}
 			for (i = 0; i < formules.length; i++)
-			for (j = i+1; j < formules.length; j++)
-				if (formules[i] == formules[j]) return false;
+				for (j = i+1; j < formules.length; j++)
+					if (formules[i] == formules[j]) return false;
+
+	atr_0 = get_atr(kFormules[0]+'\0');
+	if (!check_atr(atr_0)) return false;
+	atr = get_atr(kFormules[1]+'\0');
+	if (!check_atr(atr)) return false;
+	if (atr != atr_0) return false;
 	return true;
 }
 
@@ -133,6 +153,7 @@ function check_formule(s) {
 	var stop = 1;
 	var s1 = "";
 	var s_check = s;
+	var a = [];
 	var rx1 = new RegExp("(\\(![A-Z]\\))|[A-Z]|0");
 	//var rx2 = new RegExp("\\(((\\(!){0,1}[A-Z]\\){0,1}\\|)(\\(!){0,1}[A-Z]\\){0,1}");
 	var rx2 = new RegExp("\\(([A-Z]\\|[A-Z])\\)|\\(\\((![A-Z]\\)\\|[A-Z])\\)|\\(([A-Z]\\|\\(![A-Z]\\))\\)|\\((\\(![A-Z]\\)\\|\\(![A-Z]\\))\\)");
@@ -145,22 +166,26 @@ function check_formule(s) {
 			if (check_big(s) == false) return false;
 			s1 = s.replace(rx3,'1');
 			s = s1;
-	//console.log(s);
+			//console.log(s);
 		}
 		if (rx2.test(s)) {
 			stop++;
+			s1 = s.match(rx2);
+			a = get_atr(s1[0] + "\0");
+			if (check_atr(a) == false) return false; 
 			s1 = s.replace(rx2,'1');
 			s = s1;
-	//console.log(s);
+			//console.log(s);
 		}
 		if (rx1.test(s)) {
 			stop++;
 			s1 = s.replace(rx1,'1');
 			s = s1;
-	//console.log(s);
+			//console.log(s);
 		}
 		if(rx4.test(s)){
 			//console.log(s_check);
+			//console.log("lel");
 			stop++;
 			if (check_in(s_check) == false) return false;
 			//console.log(check_in(s_check));
@@ -268,6 +293,7 @@ function not_random_formule(mm) {
 			}
 		}
 		formule += ')';
+		if (formule == '()') formule = "(A|B)";
 		label = `<br><input type='checkbox' id='${mm+10}'><label id='${mm}'>${formule}</label>`
 		document.body.innerHTML += label;
 		return 0;
