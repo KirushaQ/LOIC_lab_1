@@ -11,7 +11,7 @@ function get_atr(s) {
 	var atr = "";
 	if (s == "" || s == "\0") return "";
 	while (s[i] != '\0') {
-		if (s[i] != '!' && s[i] != '|' && s[i] != '(' && s[i]!= ')' && s[i]!= '0' && s[i]!= '1') atr += s[i];
+		if (s[i] != '!' && s[i] != '|' && s[i] != '(' && s[i]!= ')' && s[i]!= '0' && s[i]!= '1' && s[i]!='&') atr += s[i];
 		i++;
 	}
 	return atr;
@@ -154,11 +154,25 @@ function check_formule(s) {
 	var s1 = "";
 	var s_check = s;
 	var a = [];
+	var rx5 = new RegExp("(\\(![A-Z]\\))|[A-Z]");
 	var rx1 = new RegExp("(\\(![A-Z]\\))|[A-Z]|0");
 	//var rx2 = new RegExp("\\(((\\(!){0,1}[A-Z]\\){0,1}\\|)(\\(!){0,1}[A-Z]\\){0,1}");
 	var rx2 = new RegExp("\\(([A-Z]\\|[A-Z])\\)|\\(\\((![A-Z]\\)\\|[A-Z])\\)|\\(([A-Z]\\|\\(![A-Z]\\))\\)|\\((\\(![A-Z]\\)\\|\\(![A-Z]\\))\\)");
 	var rx3 = new RegExp("\\((\\(((\\(!){0,1}[A-Z]\\){0,1}\\|)+(\\(!){0,1}[A-Z]\\){0,1}\\)&)+\\(((\\(!){0,1}[A-Z]\\){0,1}\\|)+(\\(!){0,1}[A-Z]\\){0,1}\\)\\)");
 	var rx4 = new RegExp("\\((1\\|1)\\)|\\((1&1)\\)");
+	var rx6 = new RegExp("\\(([A-Z]&\\(![A-Z]\\))\\)|\\((\\(![A-Z]\\)&[A-Z])\\)");
+
+	if(!rx5.test(s)) return false;
+
+	if (rx6.test(s)) s1 = s.match(rx6);
+	if (s1[0] == s){
+		//console.log("xxx");
+		a = get_atr(s + '\0');
+		//console.log(a);
+		if (a[0] == a[1]) return true;
+		else return false;
+	}
+
 	while (stop > 0){
 		stop = 0;
 		if (rx3.test(s)) {
