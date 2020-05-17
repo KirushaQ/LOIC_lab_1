@@ -96,6 +96,7 @@ function check_in(s) {
 	j = 0;
 	//console.log(s);
 	if (!rx1.test(s)) return true;
+	console.log("XXX");
 	for (i=0; i<s.length; i++){
 		if (s[i]=='&') continue;
 		//console.log(i);
@@ -113,13 +114,13 @@ function check_in(s) {
 			formules[j] = ss;
 			j++;
 
-			if (rx2.test(ss)) {
+			/*if (rx2.test(ss)) {
 				sk = ss.match(rx2);
 				a = get_atr(sk[0] + '\0');
 				if (check_atr(a) == false) return false;
 				kFormules.push(sk[0]); 
 				ss = ss.replace(rx2,'1');
-			}
+			}*/
 			if (atr_0 == "") {
 				atr_0 = get_atr(ss+'\0');
 				if (check_atr(atr_0+'\0') == false) return false;
@@ -141,11 +142,11 @@ function check_in(s) {
 				for (j = i+1; j < formules.length; j++)
 					if (formules[i] == formules[j]) return false;
 
-	atr_0 = get_atr(kFormules[0]+'\0');
+	/*atr_0 = get_atr(kFormules[0]+'\0');
 	if (!check_atr(atr_0)) return false;
 	atr = get_atr(kFormules[1]+'\0');
 	if (!check_atr(atr)) return false;
-	if (atr != atr_0) return false;
+	if (atr != atr_0) return false;*/
 	return true;
 }
 
