@@ -155,15 +155,17 @@ function check_formule(s) {
 	var s_check = s;
 	var a = [];
 	var rx5 = new RegExp("(\\(![A-Z]\\))|[A-Z]");
-	var rx1 = new RegExp("(\\(![A-Z]\\))|[A-Z]|0");
+	var rx1 = new RegExp("(\\(![A-Z]\\))|[A-Z]");
 	//var rx2 = new RegExp("\\(((\\(!){0,1}[A-Z]\\){0,1}\\|)(\\(!){0,1}[A-Z]\\){0,1}");
 	var rx2 = new RegExp("\\(([A-Z]\\|[A-Z])\\)|\\(\\((![A-Z]\\)\\|[A-Z])\\)|\\(([A-Z]\\|\\(![A-Z]\\))\\)|\\((\\(![A-Z]\\)\\|\\(![A-Z]\\))\\)");
 	var rx3 = new RegExp("\\((\\(((\\(!){0,1}[A-Z]\\){0,1}\\|)+(\\(!){0,1}[A-Z]\\){0,1}\\)&)+\\(((\\(!){0,1}[A-Z]\\){0,1}\\|)+(\\(!){0,1}[A-Z]\\){0,1}\\)\\)");
 	var rx4 = new RegExp("\\((1\\|1)\\)|\\((1&1)\\)");
 	var rx6 = new RegExp("\\(([A-Z]&\\(![A-Z]\\))\\)|\\((\\(![A-Z]\\)&[A-Z])\\)");
+	var rx7 = new RegExp("0|1");
 
 	if(!rx5.test(s)) return false;
 
+	if (rx7.test(s)) return false;
 	if (rx6.test(s)) s1 = s.match(rx6);
 	if (s1[0] == s){
 		//console.log("xxx");
