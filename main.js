@@ -81,6 +81,41 @@ function full_check_atr(atr_0, atr){
 	return true;
 }
 
+function extra_atr_check(s, s2){
+	var count = 0;
+	var sx = s;
+	var sy = s2;
+	var v;
+	var first = [];
+	var second = [];
+	var rx1 = new RegExp("(\\(![A-Z]\\))|([A-Z])");
+	var stop = 1;
+	while (stop != 0){
+		stop = 0;
+		if (rx1.test(sx)){
+			stop ++;
+			v = sx.match(rx1);
+			first.push(v[0]);
+			sx=sx.replace(rx1,"0");
+		}
+	}
+	stop = 1;
+	while (stop != 0){
+		stop = 0;
+		if (rx1.test(sy)){
+			stop ++;
+			v = sy.match(rx1);
+			second.push(v[0]);
+			sy=sy.replace(rx1,"0");
+		}
+	}
+	for (i = 0; i<first.length; i++)
+		if (first[i] == second[i]) count++;
+	if (count == first.length) {console.log("V"); return false;}
+	return true;
+
+}
+
 function check_in(s) {
 	var rx1 = new RegExp("&");
 	var rx2 = new RegExp("\\(([A-Z]\\|[A-Z])\\)|\\(\\((![A-Z]\\)\\|[A-Z])\\)|\\(([A-Z]\\|\\(![A-Z]\\))\\)|\\((\\(![A-Z]\\)\\|\\(![A-Z]\\))\\)");
@@ -141,6 +176,7 @@ function check_in(s) {
 			for (i = 0; i < formules.length; i++)
 				for (j = i+1; j < formules.length; j++)
 					if (formules[i] == formules[j]) return false;
+	if (!extra_atr_check(formules[0], formules[1])) return false;
 
 	/*atr_0 = get_atr(kFormules[0]+'\0');
 	if (!check_atr(atr_0)) return false;
